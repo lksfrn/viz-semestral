@@ -35,7 +35,7 @@ const body22 = await res22.json()
 const rows = [...body20.data.row, ...body21.data.row, ...body22.data.row]
 
 Histogram(rows, {
-   value: (d) => d.oblast,
+   value: (d) => d.uz,
    label: 'Histogram of "oblast"',
    color: 'steelblue',
 })
