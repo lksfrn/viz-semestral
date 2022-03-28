@@ -10,19 +10,19 @@ function App() {
 
    // fetch all data
    useEffect(() => {
-      fetch('./src/data/cerpani_rozpoctu_mhmp_2020.json')
+      fetch('/data/cerpani_rozpoctu_mhmp_2020.json')
          .then((res) => res.json())
          .then((res: JsonData) => {
             setData20(res.data.row)
          })
 
-      fetch('./src/data/cerpani_rozpoctu_mhmp_2021.json')
+      fetch('/data/cerpani_rozpoctu_mhmp_2021.json')
          .then((res) => res.json())
          .then((res: JsonData) => {
             setData21(res.data.row)
          })
 
-      fetch('./src/data/cerpani_rozpoctu_mhmp_2022.json')
+      fetch('/data/cerpani_rozpoctu_mhmp_2022.json')
          .then((res) => res.json())
          .then((res: JsonData) => {
             setData22(res.data.row)
