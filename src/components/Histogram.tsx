@@ -1,49 +1,11 @@
-/**
- * LIBRARIES:
- *   D3:     https://d3js.org/
- *   Lodash: https://lodash.com/
- */
+import * as d3 from 'd3'
+import { useEffect } from 'react'
+import { RowData } from '../interfaces'
 
-/**
- * @typedef Row
- * @type {object}
- * @property {string} rok
- * @property {string} oblast
- * @property {string} odpa
- * @property {string} pol
- * @property {string} uz
- * @property {string} cerpani
- * @property {string} nazev_oblast
- * @property {string} nazev_odpa
- * @property {string} nazev_pol
- * @property {string} nazev_uz
- * @property {string} rozpocet_aktualni
- */
-
-const res20 = await fetch('/data/cerpani_rozpoctu_mhmp_2020.json')
-/** @type {{ data: { row: Row[] } }} */
-const body20 = await res20.json()
-
-const res21 = await fetch('/data/cerpani_rozpoctu_mhmp_2021.json')
-/** @type {{ data: { row: Row[] } }} */
-const body21 = await res21.json()
-
-const res22 = await fetch('/data/cerpani_rozpoctu_mhmp_2022.json')
-/** @type {{ data: { row: Row[] } }} */
-const body22 = await res22.json()
-
-const rows = [...body20.data.row, ...body21.data.row, ...body22.data.row]
-
-Histogram(rows, {
-   value: (d) => d.uz,
-   label: 'Histogram of "oblast"',
-   color: 'steelblue',
-})
-
-function Histogram(
-   data,
+function histogram(
+   data: RowData[],
    {
-      value = (d) => d, // convenience alias for x
+      value = (d: any) => d, // convenience alias for x
       domain, // convenience alias for xDomain
       label, // convenience alias for xLabel
       format, // convenience alias for xFormat
@@ -70,11 +32,11 @@ function Histogram(
       yLabel = '↑ Frequency', // a label for the y-axis
       yFormat, // a format specifier string for the y-axis
       color = 'currentColor', // bar fill color
-   } = {}
+   } = {} as any
 ) {
    // Compute values.
-   const X = d3.map(data, x)
-   const Y = d3.map(data, y)
+   const X: any = d3.map(data, x)
+   const Y: any = d3.map(data, y)
    const I = d3.range(X.length)
 
    // Compute bins.
@@ -98,8 +60,10 @@ function Histogram(
    const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat)
    yFormat = yScale.tickFormat(100, yFormat)
 
+   d3.select('#histogram').selectChildren().remove()
+
    const svg = d3
-      .select('#app')
+      .select('#histogram')
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -157,4 +121,16 @@ function Histogram(
       )
 
    return svg.node()
+}
+
+export default function Histogram(props: { data: RowData[] }) {
+   useEffect(() => {
+      histogram(props.data, {
+         value: (d: RowData) => d.odpa,
+         label: 'Histogram of "oblast"',
+         color: 'steelblue',
+      })
+   }, [props.data])
+
+   return <div id="histogram"></div>
 }
