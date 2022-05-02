@@ -103,13 +103,14 @@ const stopTimes = convertFilenameToData("stop_times.txt");
 const stopToParent = {};
 const stopToName = {};
 stops.forEach((stop) => {
-  const parent = stop[5] || stop[0]
+  const parent = stop[5] || stop[0];
   stopToParent[stop[0]] = parent;
 
   stopToName[parent] = {
     name: stop[1].split(" - ")[0],
     lat: stop[2],
     lon: stop[3],
+    value: 0,
   };
 });
 
@@ -135,7 +136,13 @@ stopTimes.forEach((stopTime) => {
   const stopId = stopToParent[stopTime[3]];
   const sequence = stopTime[4];
 
-  if (!["A", "B", "C"].includes(tripIdToRouteId[tripId])) {
+  // int && < 100 = trams
+  if (
+    !(
+      Number.isSafeInteger(tripIdToRouteId[tripId]) &&
+      tripIdToRouteId[tripId] < 100
+    )
+  ) {
     return;
   }
 
@@ -163,18 +170,27 @@ stopTimes.forEach((stopTime) => {
   prevTripId = tripId;
 });
 
-const edges = Object.entries(neighbors).map(([key, value]) => ({
-  source: stopToName[key.split("-")[0]].name,
-  target: stopToName[key.split("-")[1]].name,
-  type: 'suit',
-  value,
-}));
+const edges = Object.entries(neighbors).map(([key, value]) => {
+  const [sourceName, targetName] = key.split("-");
+  const source = stopToName[sourceName];
+  const target = stopToName[targetName];
 
-const nodes = Array.from(stations).map((station) => ({
-  id: stopToName[station].name,
-  group: 1,
-  ...stopToName[station],
-}));
+  if (value > source.value) {
+    source.value = value;
+  }
+
+  if (value > target.value) {
+    target.value = value;
+  }
+
+  return {
+    source: source.name,
+    target: target.name,
+    value,
+  };
+});
+
+const nodes = Array.from(stations).map((station) => stopToName[station]);
 
 console.log("nodes", nodes);
 console.log("edges", edges);

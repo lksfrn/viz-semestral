@@ -5,7 +5,7 @@ function forceGraph({ nodes, links }) {
   const width = 1280;
   const height = 960;
   const offset = 40;
-  const radius = 7;
+  const radius = 5;
 
   d3.select("svg").remove();
   const svg = d3
@@ -28,6 +28,7 @@ function forceGraph({ nodes, links }) {
 
   const lonRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
   const latRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+  const valRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
 
   nodes.forEach((node) => {
     if (node.lat < latRange[0]) {
@@ -45,12 +46,23 @@ function forceGraph({ nodes, links }) {
     if (node.lon > lonRange[1]) {
       lonRange[1] = node.lon;
     }
+
+    if (node.value < valRange[0]) {
+      valRange[0] = node.value;
+    }
+
+    if (node.value > valRange[1]) {
+      valRange[1] = node.value;
+    }
   });
 
   const lonDiff = lonRange[1] - lonRange[0];
   const latDiff = latRange[1] - latRange[0];
+  const valDiff = valRange[1] - valRange[0];
   const lonStart = lonRange[0];
   const latStart = latRange[0];
+  const valStart = valRange[0] - 1;
+  const ratio = (val) => (val - valStart) / valDiff
 
   const nameToNode = {};
   nodes.forEach((node) => {
@@ -64,19 +76,19 @@ function forceGraph({ nodes, links }) {
       .append("circle")
       .attr("cx", x)
       .attr("cy", y)
-      .attr("r", radius)
-      .attr("fill", "black");
+      .attr("r", Math.ceil(ratio(node.value) * 12))
+      .attr("fill", "#777");
 
-    svg
-      .append("text")
-      .attr("x", x + 15)
-      .attr("y", y + 4)
-      .attr("stroke", "black")
-      .style("font-size", 14)
-      .text(node.name);
+    // svg
+    //   .append("text")
+    //   .attr("x", x + 15)
+    //   .attr("y", y + 4)
+    //   .attr("stroke", "black")
+    //   .style("font-size", 14)
+    //   .text(node.name);
   });
 
-  links.map((link) => {
+  links.forEach((link) => {
     svg
       .append("line")
       .attr(
@@ -101,7 +113,8 @@ function forceGraph({ nodes, links }) {
           innerHeight -
           ((nameToNode[link.target].lat - latStart) / latDiff) * innerHeight
       )
-      .attr("stroke", "black");
+      .attr("stroke", "black")
+      .attr("stroke-width", Math.ceil(ratio(link.value) * 8));
   });
 }
 
