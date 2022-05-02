@@ -1,1 +1,716 @@
-{"nodes":[{"id":"Skalka","group":1},{"id":"Strašnická","group":1},{"id":"Želivského","group":1},{"id":"Flora","group":1},{"id":"Jiřího z Poděbrad","group":1},{"id":"Náměstí Míru","group":1},{"id":"Muzeum","group":1},{"id":"Můstek","group":1},{"id":"Staroměstská","group":1},{"id":"Malostranská","group":1},{"id":"Hradčanská","group":1},{"id":"Dejvická","group":1},{"id":"Bořislavka","group":1},{"id":"Nádraží Veleslavín","group":1},{"id":"Petřiny","group":1},{"id":"Nemocnice Motol","group":1},{"id":"Depo Hostivař","group":1},{"id":"Zličín","group":1},{"id":"Stodůlky","group":1},{"id":"Luka","group":1},{"id":"Lužiny","group":1},{"id":"Hůrka","group":1},{"id":"Nové Butovice","group":1},{"id":"Jinonice","group":1},{"id":"Radlická","group":1},{"id":"Smíchovské nádraží","group":1},{"id":"Anděl","group":1},{"id":"Karlovo náměstí","group":1},{"id":"Národní třída","group":1},{"id":"Můstek","group":1},{"id":"Náměstí Republiky","group":1},{"id":"Florenc","group":1},{"id":"Křižíkova","group":1},{"id":"Invalidovna","group":1},{"id":"Palmovka","group":1},{"id":"Českomoravská","group":1},{"id":"Vysočanská","group":1},{"id":"Kolbenova","group":1},{"id":"Hloubětín","group":1},{"id":"Rajská zahrada","group":1},{"id":"Černý Most","group":1},{"id":"Háje","group":1},{"id":"Opatov","group":1},{"id":"Chodov","group":1},{"id":"Roztyly","group":1},{"id":"Kačerov","group":1},{"id":"Budějovická","group":1},{"id":"Pankrác","group":1},{"id":"Pražského povstání","group":1},{"id":"Vyšehrad","group":1},{"id":"I. P. Pavlova","group":1},{"id":"Muzeum","group":1},{"id":"Hlavní nádraží","group":1},{"id":"Florenc","group":1},{"id":"Vltavská","group":1},{"id":"Nádraží Holešovice","group":1},{"id":"Kobylisy","group":1},{"id":"Ládví","group":1},{"id":"Střížkov","group":1},{"id":"Prosek","group":1},{"id":"Letňany","group":1}],"links":[{"source":"Strašnická","target":"Skalka","type":"suit","value":1158},{"source":"Strašnická","target":"Želivského","type":"suit","value":1158},{"source":"Flora","target":"Želivského","type":"suit","value":1158},{"source":"Flora","target":"Jiřího z Poděbrad","type":"suit","value":1158},{"source":"Jiřího z Poděbrad","target":"Náměstí Míru","type":"suit","value":1158},{"source":"Muzeum","target":"Náměstí Míru","type":"suit","value":1158},{"source":"Můstek","target":"Muzeum","type":"suit","value":1158},{"source":"Můstek","target":"Staroměstská","type":"suit","value":1158},{"source":"Malostranská","target":"Staroměstská","type":"suit","value":1158},{"source":"Hradčanská","target":"Malostranská","type":"suit","value":1158},{"source":"Hradčanská","target":"Dejvická","type":"suit","value":1158},{"source":"Bořislavka","target":"Dejvická","type":"suit","value":1081},{"source":"Bořislavka","target":"Nádraží Veleslavín","type":"suit","value":1081},{"source":"Nádraží Veleslavín","target":"Petřiny","type":"suit","value":1081},{"source":"Nemocnice Motol","target":"Petřiny","type":"suit","value":1079},{"source":"Depo Hostivař","target":"Skalka","type":"suit","value":887},{"source":"Stodůlky","target":"Zličín","type":"suit","value":1193},{"source":"Luka","target":"Stodůlky","type":"suit","value":1193},{"source":"Luka","target":"Lužiny","type":"suit","value":1193},{"source":"Hůrka","target":"Lužiny","type":"suit","value":1193},{"source":"Hůrka","target":"Nové Butovice","type":"suit","value":1193},{"source":"Nové Butovice","target":"Jinonice","type":"suit","value":1200},{"source":"Jinonice","target":"Radlická","type":"suit","value":1200},{"source":"Smíchovské nádraží","target":"Radlická","type":"suit","value":1200},{"source":"Anděl","target":"Smíchovské nádraží","type":"suit","value":1203},{"source":"Anděl","target":"Karlovo náměstí","type":"suit","value":1203},{"source":"Karlovo náměstí","target":"Národní třída","type":"suit","value":1203},{"source":"Můstek","target":"Národní třída","type":"suit","value":1203},{"source":"Můstek","target":"Náměstí Republiky","type":"suit","value":1203},{"source":"Náměstí Republiky","target":"Florenc","type":"suit","value":1203},{"source":"Florenc","target":"Křižíkova","type":"suit","value":1203},{"source":"Invalidovna","target":"Křižíkova","type":"suit","value":1203},{"source":"Palmovka","target":"Invalidovna","type":"suit","value":1203},{"source":"Českomoravská","target":"Palmovka","type":"suit","value":1203},{"source":"Vysočanská","target":"Českomoravská","type":"suit","value":1200},{"source":"Vysočanská","target":"Kolbenova","type":"suit","value":1200},{"source":"Hloubětín","target":"Kolbenova","type":"suit","value":1200},{"source":"Hloubětín","target":"Rajská zahrada","type":"suit","value":1200},{"source":"Rajská zahrada","target":"Černý Most","type":"suit","value":1200},{"source":"Opatov","target":"Háje","type":"suit","value":1319},{"source":"Opatov","target":"Chodov","type":"suit","value":1319},{"source":"Chodov","target":"Roztyly","type":"suit","value":1319},{"source":"Kačerov","target":"Roztyly","type":"suit","value":1319},{"source":"Kačerov","target":"Budějovická","type":"suit","value":1368},{"source":"Pankrác","target":"Budějovická","type":"suit","value":1368},{"source":"Pankrác","target":"Pražského povstání","type":"suit","value":1368},{"source":"Vyšehrad","target":"Pražského povstání","type":"suit","value":1368},{"source":"I. P. Pavlova","target":"Vyšehrad","type":"suit","value":1368},{"source":"I. P. Pavlova","target":"Muzeum","type":"suit","value":1368},{"source":"Hlavní nádraží","target":"Muzeum","type":"suit","value":1368},{"source":"Hlavní nádraží","target":"Florenc","type":"suit","value":1368},{"source":"Vltavská","target":"Florenc","type":"suit","value":1368},{"source":"Vltavská","target":"Nádraží Holešovice","type":"suit","value":1368},{"source":"Nádraží Holešovice","target":"Kobylisy","type":"suit","value":1365},{"source":"Kobylisy","target":"Ládví","type":"suit","value":1365},{"source":"Střížkov","target":"Ládví","type":"suit","value":1362},{"source":"Střížkov","target":"Prosek","type":"suit","value":1362},{"source":"Letňany","target":"Prosek","type":"suit","value":1362}]}
+{
+  "nodes": [
+    {
+      "id": "Skalka",
+      "group": 1,
+      "name": "Skalka",
+      "lat": 50.06843,
+      "lon": 14.507863
+    },
+    {
+      "id": "Strašnická",
+      "group": 1,
+      "name": "Strašnická",
+      "lat": 50.073071,
+      "lon": 14.490516
+    },
+    {
+      "id": "Želivského",
+      "group": 1,
+      "name": "Želivského",
+      "lat": 50.078283,
+      "lon": 14.47548
+    },
+    {
+      "id": "Flora",
+      "group": 1,
+      "name": "Flora",
+      "lat": 50.078277,
+      "lon": 14.462593
+    },
+    {
+      "id": "Jiřího z Poděbrad",
+      "group": 1,
+      "name": "Jiřího z Poděbrad",
+      "lat": 50.077722,
+      "lon": 14.450752
+    },
+    {
+      "id": "Náměstí Míru",
+      "group": 1,
+      "name": "Náměstí Míru",
+      "lat": 50.075312,
+      "lon": 14.439782
+    },
+    {
+      "id": "Muzeum",
+      "group": 1,
+      "name": "Muzeum",
+      "lat": 50.079483,
+      "lon": 14.43167
+    },
+    {
+      "id": "Můstek",
+      "group": 1,
+      "name": "Můstek",
+      "lat": 50.083531,
+      "lon": 14.424558
+    },
+    {
+      "id": "Staroměstská",
+      "group": 1,
+      "name": "Staroměstská",
+      "lat": 50.088203,
+      "lon": 14.417672
+    },
+    {
+      "id": "Malostranská",
+      "group": 1,
+      "name": "Malostranská",
+      "lat": 50.091725,
+      "lon": 14.409214
+    },
+    {
+      "id": "Hradčanská",
+      "group": 1,
+      "name": "Hradčanská",
+      "lat": 50.097442,
+      "lon": 14.403161
+    },
+    {
+      "id": "Dejvická",
+      "group": 1,
+      "name": "Dejvická",
+      "lat": 50.100472,
+      "lon": 14.393176
+    },
+    {
+      "id": "Bořislavka",
+      "group": 1,
+      "name": "Bořislavka",
+      "lat": 50.09834,
+      "lon": 14.362833
+    },
+    {
+      "id": "Nádraží Veleslavín",
+      "group": 1,
+      "name": "Nádraží Veleslavín",
+      "lat": 50.09586,
+      "lon": 14.34833
+    },
+    {
+      "id": "Petřiny",
+      "group": 1,
+      "name": "Petřiny",
+      "lat": 50.086841,
+      "lon": 14.344939
+    },
+    {
+      "id": "Nemocnice Motol",
+      "group": 1,
+      "name": "Nemocnice Motol",
+      "lat": 50.075388,
+      "lon": 14.34152
+    },
+    {
+      "id": "Depo Hostivař",
+      "group": 1,
+      "name": "Depo Hostivař",
+      "lat": 50.075532,
+      "lon": 14.515385
+    },
+    {
+      "id": "Zličín",
+      "group": 1,
+      "name": "Zličín",
+      "lat": 50.053261,
+      "lon": 14.291105
+    },
+    {
+      "id": "Stodůlky",
+      "group": 1,
+      "name": "Stodůlky",
+      "lat": 50.046701,
+      "lon": 14.30654
+    },
+    {
+      "id": "Luka",
+      "group": 1,
+      "name": "Luka",
+      "lat": 50.045672,
+      "lon": 14.321342
+    },
+    {
+      "id": "Lužiny",
+      "group": 1,
+      "name": "Lužiny",
+      "lat": 50.044497,
+      "lon": 14.330443
+    },
+    {
+      "id": "Hůrka",
+      "group": 1,
+      "name": "Hůrka",
+      "lat": 50.050009,
+      "lon": 14.342793
+    },
+    {
+      "id": "Nové Butovice",
+      "group": 1,
+      "name": "Nové Butovice",
+      "lat": 50.050843,
+      "lon": 14.35215
+    },
+    {
+      "id": "Jinonice",
+      "group": 1,
+      "name": "Jinonice",
+      "lat": 50.054207,
+      "lon": 14.369914
+    },
+    {
+      "id": "Radlická",
+      "group": 1,
+      "name": "Radlická",
+      "lat": 50.05812,
+      "lon": 14.38776
+    },
+    {
+      "id": "Smíchovské nádraží",
+      "group": 1,
+      "name": "Smíchovské nádraží",
+      "lat": 50.061305,
+      "lon": 14.409111
+    },
+    {
+      "id": "Anděl",
+      "group": 1,
+      "name": "Anděl",
+      "lat": 50.069949,
+      "lon": 14.403769
+    },
+    {
+      "id": "Karlovo náměstí",
+      "group": 1,
+      "name": "Karlovo náměstí",
+      "lat": 50.074591,
+      "lon": 14.416979
+    },
+    {
+      "id": "Národní třída",
+      "group": 1,
+      "name": "Národní třída",
+      "lat": 50.079751,
+      "lon": 14.420295
+    },
+    {
+      "id": "Můstek",
+      "group": 1,
+      "name": "Můstek",
+      "lat": 50.083412,
+      "lon": 14.423388
+    },
+    {
+      "id": "Náměstí Republiky",
+      "group": 1,
+      "name": "Náměstí Republiky",
+      "lat": 50.088825,
+      "lon": 14.430599
+    },
+    {
+      "id": "Florenc",
+      "group": 1,
+      "name": "Florenc",
+      "lat": 50.090484,
+      "lon": 14.437647
+    },
+    {
+      "id": "Křižíkova",
+      "group": 1,
+      "name": "Křižíkova",
+      "lat": 50.092546,
+      "lon": 14.451341
+    },
+    {
+      "id": "Invalidovna",
+      "group": 1,
+      "name": "Invalidovna",
+      "lat": 50.096801,
+      "lon": 14.463153
+    },
+    {
+      "id": "Palmovka",
+      "group": 1,
+      "name": "Palmovka",
+      "lat": 50.103984,
+      "lon": 14.474797
+    },
+    {
+      "id": "Českomoravská",
+      "group": 1,
+      "name": "Českomoravská",
+      "lat": 50.106164,
+      "lon": 14.491691
+    },
+    {
+      "id": "Vysočanská",
+      "group": 1,
+      "name": "Vysočanská",
+      "lat": 50.110062,
+      "lon": 14.501082
+    },
+    {
+      "id": "Kolbenova",
+      "group": 1,
+      "name": "Kolbenova",
+      "lat": 50.110395,
+      "lon": 14.516399
+    },
+    {
+      "id": "Hloubětín",
+      "group": 1,
+      "name": "Hloubětín",
+      "lat": 50.106687,
+      "lon": 14.536391
+    },
+    {
+      "id": "Rajská zahrada",
+      "group": 1,
+      "name": "Rajská zahrada",
+      "lat": 50.106848,
+      "lon": 14.560504
+    },
+    {
+      "id": "Černý Most",
+      "group": 1,
+      "name": "Černý Most",
+      "lat": 50.108967,
+      "lon": 14.576834
+    },
+    {
+      "id": "Háje",
+      "group": 1,
+      "name": "Háje",
+      "lat": 50.030783,
+      "lon": 14.526975
+    },
+    {
+      "id": "Opatov",
+      "group": 1,
+      "name": "Opatov",
+      "lat": 50.027888,
+      "lon": 14.509193
+    },
+    {
+      "id": "Chodov",
+      "group": 1,
+      "name": "Chodov",
+      "lat": 50.031672,
+      "lon": 14.490962
+    },
+    {
+      "id": "Roztyly",
+      "group": 1,
+      "name": "Roztyly",
+      "lat": 50.037669,
+      "lon": 14.47674
+    },
+    {
+      "id": "Kačerov",
+      "group": 1,
+      "name": "Kačerov",
+      "lat": 50.041838,
+      "lon": 14.45931
+    },
+    {
+      "id": "Budějovická",
+      "group": 1,
+      "name": "Budějovická",
+      "lat": 50.04441,
+      "lon": 14.448788
+    },
+    {
+      "id": "Pankrác",
+      "group": 1,
+      "name": "Pankrác",
+      "lat": 50.051027,
+      "lon": 14.439684
+    },
+    {
+      "id": "Pražského povstání",
+      "group": 1,
+      "name": "Pražského povstání",
+      "lat": 50.056856,
+      "lon": 14.433313
+    },
+    {
+      "id": "Vyšehrad",
+      "group": 1,
+      "name": "Vyšehrad",
+      "lat": 50.06314,
+      "lon": 14.430521
+    },
+    {
+      "id": "I. P. Pavlova",
+      "group": 1,
+      "name": "I. P. Pavlova",
+      "lat": 50.074332,
+      "lon": 14.430311
+    },
+    {
+      "id": "Muzeum",
+      "group": 1,
+      "name": "Muzeum",
+      "lat": 50.080234,
+      "lon": 14.431097
+    },
+    {
+      "id": "Hlavní nádraží",
+      "group": 1,
+      "name": "Hlavní nádraží",
+      "lat": 50.083505,
+      "lon": 14.434139
+    },
+    {
+      "id": "Florenc",
+      "group": 1,
+      "name": "Florenc",
+      "lat": 50.090033,
+      "lon": 14.439172
+    },
+    {
+      "id": "Vltavská",
+      "group": 1,
+      "name": "Vltavská",
+      "lat": 50.100298,
+      "lon": 14.438494
+    },
+    {
+      "id": "Nádraží Holešovice",
+      "group": 1,
+      "name": "Nádraží Holešovice",
+      "lat": 50.108915,
+      "lon": 14.440074
+    },
+    {
+      "id": "Kobylisy",
+      "group": 1,
+      "name": "Kobylisy",
+      "lat": 50.12412,
+      "lon": 14.454256
+    },
+    {
+      "id": "Ládví",
+      "group": 1,
+      "name": "Ládví",
+      "lat": 50.126591,
+      "lon": 14.469453
+    },
+    {
+      "id": "Střížkov",
+      "group": 1,
+      "name": "Střížkov",
+      "lat": 50.126172,
+      "lon": 14.489545
+    },
+    {
+      "id": "Prosek",
+      "group": 1,
+      "name": "Prosek",
+      "lat": 50.119245,
+      "lon": 14.498608
+    },
+    {
+      "id": "Letňany",
+      "group": 1,
+      "name": "Letňany",
+      "lat": 50.126246,
+      "lon": 14.516412
+    }
+  ],
+  "links": [
+    {
+      "source": "Strašnická",
+      "target": "Skalka",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Strašnická",
+      "target": "Želivského",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Flora",
+      "target": "Želivského",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Flora",
+      "target": "Jiřího z Poděbrad",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Jiřího z Poděbrad",
+      "target": "Náměstí Míru",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Muzeum",
+      "target": "Náměstí Míru",
+      "type": "suit",
+      "value": 1158
+    },
+    { "source": "Můstek", "target": "Muzeum", "type": "suit", "value": 1158 },
+    {
+      "source": "Můstek",
+      "target": "Staroměstská",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Malostranská",
+      "target": "Staroměstská",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Hradčanská",
+      "target": "Malostranská",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Hradčanská",
+      "target": "Dejvická",
+      "type": "suit",
+      "value": 1158
+    },
+    {
+      "source": "Bořislavka",
+      "target": "Dejvická",
+      "type": "suit",
+      "value": 1081
+    },
+    {
+      "source": "Bořislavka",
+      "target": "Nádraží Veleslavín",
+      "type": "suit",
+      "value": 1081
+    },
+    {
+      "source": "Nádraží Veleslavín",
+      "target": "Petřiny",
+      "type": "suit",
+      "value": 1081
+    },
+    {
+      "source": "Nemocnice Motol",
+      "target": "Petřiny",
+      "type": "suit",
+      "value": 1079
+    },
+    {
+      "source": "Depo Hostivař",
+      "target": "Skalka",
+      "type": "suit",
+      "value": 887
+    },
+    { "source": "Stodůlky", "target": "Zličín", "type": "suit", "value": 1193 },
+    { "source": "Luka", "target": "Stodůlky", "type": "suit", "value": 1193 },
+    { "source": "Luka", "target": "Lužiny", "type": "suit", "value": 1193 },
+    { "source": "Hůrka", "target": "Lužiny", "type": "suit", "value": 1193 },
+    {
+      "source": "Hůrka",
+      "target": "Nové Butovice",
+      "type": "suit",
+      "value": 1193
+    },
+    {
+      "source": "Nové Butovice",
+      "target": "Jinonice",
+      "type": "suit",
+      "value": 1200
+    },
+    {
+      "source": "Jinonice",
+      "target": "Radlická",
+      "type": "suit",
+      "value": 1200
+    },
+    {
+      "source": "Smíchovské nádraží",
+      "target": "Radlická",
+      "type": "suit",
+      "value": 1200
+    },
+    {
+      "source": "Anděl",
+      "target": "Smíchovské nádraží",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Anděl",
+      "target": "Karlovo náměstí",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Karlovo náměstí",
+      "target": "Národní třída",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Můstek",
+      "target": "Národní třída",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Můstek",
+      "target": "Náměstí Republiky",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Náměstí Republiky",
+      "target": "Florenc",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Florenc",
+      "target": "Křižíkova",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Invalidovna",
+      "target": "Křižíkova",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Palmovka",
+      "target": "Invalidovna",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Českomoravská",
+      "target": "Palmovka",
+      "type": "suit",
+      "value": 1203
+    },
+    {
+      "source": "Vysočanská",
+      "target": "Českomoravská",
+      "type": "suit",
+      "value": 1200
+    },
+    {
+      "source": "Vysočanská",
+      "target": "Kolbenova",
+      "type": "suit",
+      "value": 1200
+    },
+    {
+      "source": "Hloubětín",
+      "target": "Kolbenova",
+      "type": "suit",
+      "value": 1200
+    },
+    {
+      "source": "Hloubětín",
+      "target": "Rajská zahrada",
+      "type": "suit",
+      "value": 1200
+    },
+    {
+      "source": "Rajská zahrada",
+      "target": "Černý Most",
+      "type": "suit",
+      "value": 1200
+    },
+    { "source": "Opatov", "target": "Háje", "type": "suit", "value": 1319 },
+    { "source": "Opatov", "target": "Chodov", "type": "suit", "value": 1319 },
+    { "source": "Chodov", "target": "Roztyly", "type": "suit", "value": 1319 },
+    { "source": "Kačerov", "target": "Roztyly", "type": "suit", "value": 1319 },
+    {
+      "source": "Kačerov",
+      "target": "Budějovická",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "Pankrác",
+      "target": "Budějovická",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "Pankrác",
+      "target": "Pražského povstání",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "Vyšehrad",
+      "target": "Pražského povstání",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "I. P. Pavlova",
+      "target": "Vyšehrad",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "I. P. Pavlova",
+      "target": "Muzeum",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "Hlavní nádraží",
+      "target": "Muzeum",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "Hlavní nádraží",
+      "target": "Florenc",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "Vltavská",
+      "target": "Florenc",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "Vltavská",
+      "target": "Nádraží Holešovice",
+      "type": "suit",
+      "value": 1368
+    },
+    {
+      "source": "Nádraží Holešovice",
+      "target": "Kobylisy",
+      "type": "suit",
+      "value": 1365
+    },
+    { "source": "Kobylisy", "target": "Ládví", "type": "suit", "value": 1365 },
+    { "source": "Střížkov", "target": "Ládví", "type": "suit", "value": 1362 },
+    { "source": "Střížkov", "target": "Prosek", "type": "suit", "value": 1362 },
+    { "source": "Letňany", "target": "Prosek", "type": "suit", "value": 1362 }
+  ]
+}

@@ -70,15 +70,41 @@ function forceGraph(
   const links = data.links.map((d) => Object.create(d));
   const nodes = data.nodes.map((d) => Object.create(d));
 
+   // Compute values.
+   const N = d3.map(nodes, nodeId).map(intern);
+   const LS = d3.map(links, linkSource).map(intern);
+   const LT = d3.map(links, linkTarget).map(intern);
+   if (nodeTitle === undefined) nodeTitle = (_, i) => N[i];
+   const T = nodeTitle == null ? null : d3.map(nodes, nodeTitle);
+   const G = nodeGroup == null ? null : d3.map(nodes, nodeGroup).map(intern);
+   const W =
+     typeof linkStrokeWidth !== "function"
+       ? null
+       : d3.map(links, linkStrokeWidth);
+ 
+   // Replace the input nodes and links with mutable objects for the simulation.
+   nodes = d3.map(nodes, (_, i) => ({ id: N[i] }));
+   links = d3.map(links, (_, i) => ({ source: LS[i], target: LT[i] }));
+ 
+   // Compute default domains.
+   if (G && nodeGroups === undefined) nodeGroups = d3.sort(G);
+ 
+   // Construct the scales.
+   const color = nodeGroup == null ? null : d3.scaleOrdinal(nodeGroups, colors);
+ 
+   // Construct the forces.
+   const forceNode = d3.forceManyBody();
+   const forceLink = d3.forceLink(links).id(({ index: i }) => N[i]);
+   if (nodeStrength !== undefined) forceNode.strength(nodeStrength);
+   if (linkStrength !== undefined) forceLink.strength(linkStrength);
+
   const simulation = d3
     .forceSimulation(nodes)
-    .force(
-      "link",
-      d3.forceLink(links).id((d) => d.id)
-    )
-    .force("charge", d3.forceManyBody().strength(-400))
+    .force("link", forceLink)
+    .force("charge", forceNode)
     .force("x", d3.forceX())
-    .force("y", d3.forceY());
+    .force("y", d3.forceY())
+    .on("tick", ticked);
 
   const svg = d3
     .select("#force-graph3")
@@ -121,7 +147,7 @@ function forceGraph(
     .selectAll("g")
     .data(nodes)
     .join("g")
-    .call(drag(simulation));
+    // .call(drag(simulation));
 
   node
     .append("circle")
@@ -140,10 +166,25 @@ function forceGraph(
     .attr("stroke", "white")
     .attr("stroke-width", 3);
 
-  simulation.on("tick", () => {
-    link.attr("d", linkArc);
-    node.attr("transform", (d) => `translate(${d.x},${d.y})`);
-  });
+  // simulation.on("tick", () => {
+  //   link.attr("d", linkArc);
+  //   node.attr("transform", (d) => `translate(${d.x},${d.y})`);
+  // });
+  function intern(value) {
+    return value !== null && typeof value === "object"
+      ? value.valueOf()
+      : value;
+  }
+
+  function ticked() {
+    link
+      .attr("x1", (d) => d.source.x)
+      .attr("y1", (d) => d.source.y)
+      .attr("x2", (d) => d.target.x)
+      .attr("y2", (d) => d.target.y);
+
+    node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+  }
 
   // invalidation.then(() => simulation.stop());
 

@@ -103,9 +103,14 @@ const stopTimes = convertFilenameToData("stop_times.txt");
 const stopToParent = {};
 const stopToName = {};
 stops.forEach((stop) => {
-  stopToParent[stop[0]] = stop[5] || stop[0];
-  console.log(stop[0], stop[1]);
-  stopToName[stopToParent[stop[0]]] = stop[1].split(" - ")[0];
+  const parent = stop[5] || stop[0]
+  stopToParent[stop[0]] = parent;
+
+  stopToName[parent] = {
+    name: stop[1].split(" - ")[0],
+    lat: stop[2],
+    lon: stop[3],
+  };
 });
 
 const routeIdToRoute = {};
@@ -159,15 +164,16 @@ stopTimes.forEach((stopTime) => {
 });
 
 const edges = Object.entries(neighbors).map(([key, value]) => ({
-  source: stopToName[key.split("-")[0]],
-  target: stopToName[key.split("-")[1]],
+  source: stopToName[key.split("-")[0]].name,
+  target: stopToName[key.split("-")[1]].name,
   type: 'suit',
   value,
 }));
 
 const nodes = Array.from(stations).map((station) => ({
-  id: stopToName[station],
+  id: stopToName[station].name,
   group: 1,
+  ...stopToName[station],
 }));
 
 console.log("nodes", nodes);

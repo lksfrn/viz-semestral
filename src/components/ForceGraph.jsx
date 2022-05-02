@@ -100,7 +100,7 @@ function forceGraph(
     .data(nodes)
     .join("circle")
     .attr("r", nodeRadius)
-    .call(drag(simulation));
+    // .call(drag(simulation));
 
   if (W) link.attr("stroke-width", ({ index: i }) => W[i]);
   if (L) link.attr("stroke", ({ index: i }) => L[i]);

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import ForceGraph from './components/ForceGraph'
+import ForceGraph from './components/ForceGraph5'
 import Histogram from './components/Histogram'
 import { JsonData, RowData } from './interfaces'
 
 function App() {
    const [data, setData] = useState<any>(null)
 
-   // fetch all data
+   // fetch data
    useEffect(() => {
       fetch('/data/miserables.json')
          .then((res) => res.json())
