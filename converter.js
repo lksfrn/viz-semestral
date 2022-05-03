@@ -211,13 +211,13 @@ let edges = Object.entries(neighbors).map(([key, value]) => {
     value,
   };
 });
-edges = _.sortBy(edges, "-value");
+edges = _.reverse(_.sortBy(edges, "value"));
 
 let nodes = Array.from(stations).map((station) => {
   stopToName[station].links = Array.from(stopToName[station].links).sort();
   return stopToName[station];
 });
-nodes = _.sortBy(nodes, "-value");
+nodes = _.reverse(_.sortBy(nodes, "value"));
 
 console.log("nodes", nodes);
 console.log("edges", edges);
