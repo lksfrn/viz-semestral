@@ -111,6 +111,7 @@ stops.forEach((stop) => {
     lat: stop[2],
     lon: stop[3],
     value: 0,
+    links: new Set(),
   };
 });
 
@@ -137,16 +138,15 @@ stopTimes.forEach((stopTime) => {
   const sequence = stopTime[4];
 
   // int && < 100 = trams
+  const routeName = tripIdToRouteId[tripId];
   if (
-    !(
-      Number.isSafeInteger(tripIdToRouteId[tripId]) &&
-      tripIdToRouteId[tripId] < 100
-    )
+    !(Number.isSafeInteger(routeName) && routeName < 100) // && !['A', 'B', 'C'].includes(routeName)
   ) {
     return;
   }
 
   stations.add(stopId);
+  stopToName[stopId].links.add(routeName);
 
   if (
     prevStopId &&
@@ -170,17 +170,39 @@ stopTimes.forEach((stopTime) => {
   prevTripId = tripId;
 });
 
-const edges = Object.entries(neighbors).map(([key, value]) => {
+const edgeValueRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+const nodeValueRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+
+let edges = Object.entries(neighbors).map(([key, value]) => {
   const [sourceName, targetName] = key.split("-");
   const source = stopToName[sourceName];
   const target = stopToName[targetName];
 
-  if (value > source.value) {
-    source.value = value;
+  target.value += value;
+  source.value += value;
+
+  if (target.value > nodeValueRange[1]) {
+    nodeValueRange[1] = target.value;
   }
 
-  if (value > target.value) {
-    target.value = value;
+  if (target.value < nodeValueRange[0]) {
+    nodeValueRange[0] = target.value;
+  }
+
+  if (source.value > nodeValueRange[1]) {
+    nodeValueRange[1] = source.value;
+  }
+
+  if (source.value < nodeValueRange[0]) {
+    nodeValueRange[0] = source.value;
+  }
+
+  if (value > edgeValueRange[1]) {
+    edgeValueRange[1] = value;
+  }
+
+  if (value < edgeValueRange[0]) {
+    edgeValueRange[0] = value;
   }
 
   return {
@@ -189,13 +211,18 @@ const edges = Object.entries(neighbors).map(([key, value]) => {
     value,
   };
 });
+edges = _.sortBy(edges, "-value");
 
-const nodes = Array.from(stations).map((station) => stopToName[station]);
+let nodes = Array.from(stations).map((station) => {
+  stopToName[station].links = Array.from(stopToName[station].links).sort();
+  return stopToName[station];
+});
+nodes = _.sortBy(nodes, "-value");
 
 console.log("nodes", nodes);
 console.log("edges", edges);
 
 fs.writeFileSync(
   path.join("data", "miserables.json"),
-  JSON.stringify({ nodes, links: edges })
+  JSON.stringify({ nodes, links: edges, nodeValueRange, edgeValueRange })
 );
