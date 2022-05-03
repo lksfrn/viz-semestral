@@ -122,7 +122,7 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
       .forEach((child) => {
         const ratio = child.getAttribute("x-ratio");
 
-        child.setAttribute("r", Number(ratio) * maxRadius * Math.pow(1.1, t.k));
+        child.setAttribute("r", Number(ratio) * maxRadius * Math.pow(1.1, t.k) + 2);
         child.setAttribute("stroke-width", 1 / t.k);
       });
 
@@ -131,7 +131,7 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
       .forEach((child) => {
         const ratio = child.getAttribute("x-ratio");
 
-        child.setAttribute("stroke-width", Number(ratio) * maxStroke * Math.pow(1.05, t.k));
+        child.setAttribute("stroke-width", Number(ratio) * maxStroke * Math.pow(1.05, t.k) + 1);
       });
 
     g.attr("transform", t);
@@ -148,7 +148,7 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
     const ratio =
       (link.value - edgeValueRange[0]) /
       (edgeValueRange[1] - edgeValueRange[0]);
-    const strokeWidth = ratio * maxStroke;
+    const strokeWidth = ratio * maxStroke + 1;
 
     g.append("line")
       .attr(
@@ -183,7 +183,7 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
     const ratio =
       (node.value - nodeValueRange[0]) /
       (nodeValueRange[1] - nodeValueRange[0]);
-    const r = ratio * maxRadius + 1;
+    const r = ratio * maxRadius + 2;
     const color = colorRange[Math.round(ratio * (colorRange.length - 1))];
 
     g.append("circle")
