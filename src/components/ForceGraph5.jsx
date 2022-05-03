@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { zoomIdentity } from "d3";
 import { useEffect } from "react";
 
 function GColor(r, g, b) {
@@ -68,14 +69,21 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
   const height = width / xyRatio;
 
   const offset = 0.05;
-  const maxStroke = 16;
-  const maxRadius = maxStroke / 2;
+  const maxStrokeDefault = 16;
+  const maxRadiusDefault = maxStrokeDefault / 1.2;
+
+  let maxStroke = maxStrokeDefault;
+  let maxRadius = maxRadiusDefault;
 
   function resetZoom() {
+    maxStroke = maxStrokeDefault;
+    maxRadius = maxRadiusDefault;
+
     const initialZoom = d3.zoomIdentity;
     initialZoom.x = (width * offset) / 2;
     initialZoom.y = (height * offset) / 2;
     initialZoom.k = 1 - offset;
+
     d3.select("svg g").attr("transform", initialZoom);
   }
 
@@ -91,12 +99,40 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
 
   const g = svg.append("g");
 
-  graph.append("button").text("Reset Zoom").on("click", resetZoom);
+  graph.append("button").text("Reset Zoom").on("click", () => window.location.reload());
 
   resetZoom();
 
   function handleZoom(e) {
     const t = e.transform;
+
+    if (t.k < 1 - offset) {
+        t.k = 1 - offset;
+        t.x = (width * offset) / 2;
+        t.y = (height * offset) / 2;
+    }
+
+    maxRadius = maxRadiusDefault / t.k;
+    maxStroke = maxStrokeDefault / t.k;
+
+    const scaler = Math.pow(1.1, t.k)
+    console.log(t.k);
+    g.selectChildren("circle")
+      .nodes()
+      .forEach((child) => {
+        const ratio = child.getAttribute("x-ratio");
+
+        child.setAttribute("r", Number(ratio) * maxRadius * Math.pow(1.1, t.k));
+        child.setAttribute("stroke-width", 1 / t.k);
+      });
+
+    g.selectChildren("line")
+      .nodes()
+      .forEach((child) => {
+        const ratio = child.getAttribute("x-ratio");
+
+        child.setAttribute("stroke-width", Number(ratio) * maxStroke * Math.pow(1.05, t.k));
+      });
 
     g.attr("transform", t);
   }
@@ -112,7 +148,7 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
     const ratio =
       (link.value - edgeValueRange[0]) /
       (edgeValueRange[1] - edgeValueRange[0]);
-    const strokeWidth = Math.ceil(ratio * maxStroke);
+    const strokeWidth = ratio * maxStroke;
 
     g.append("line")
       .attr(
@@ -136,7 +172,8 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
           ((nameToNode[link.target].lat - latStart) / latDiff) * height
       )
       .attr("stroke", colorRange[Math.round(ratio * (colorRange.length - 1))])
-      .attr("stroke-width", strokeWidth);
+      .attr("stroke-width", strokeWidth)
+      .attr("x-ratio", ratio);
   });
 
   nodes.forEach((node) => {
@@ -146,7 +183,7 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
     const ratio =
       (node.value - nodeValueRange[0]) /
       (nodeValueRange[1] - nodeValueRange[0]);
-    const r = Math.ceil(ratio * maxRadius) + 1;
+    const r = ratio * maxRadius + 1;
     const color = colorRange[Math.round(ratio * (colorRange.length - 1))];
 
     g.append("circle")
@@ -154,9 +191,12 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
       .attr("cy", y)
       .attr("r", r)
       .attr("fill", color)
+      .attr("x-ratio", ratio)
       .attr("stroke", "black")
+      .attr("stroke-width", 1)
       .append("title")
       .text(node.name + "\n" + node.links.join(", "));
+
     // g
     //   .append("text")
     //   .attr("x", x + 15)
