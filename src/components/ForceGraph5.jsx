@@ -2,6 +2,12 @@ import * as d3 from "d3";
 import { zoomIdentity } from "d3";
 import { useEffect } from "react";
 
+const wchScale = {
+  0: 2, // rect - not accessible
+  1: (0.98 * (Math.sqrt(Math.PI) + 2)) / 2, // semicircle - semiaccessible
+  2: Math.sqrt(Math.PI), // circle - accessible
+};
+
 function GColor(r, g, b) {
   r = typeof r === "undefined" ? 0 : r;
   g = typeof g === "undefined" ? 0 : g;
@@ -32,14 +38,14 @@ function createColorRange(c1, c2) {
 
 // let zoom = d3.zoom().on("zoom", handleZoom);
 
-function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
+function forceGraph({ nodes, edges }) {
   const lonRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
   const latRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
 
-  const nameToNode = {};
-  nodes.forEach((node) => {
-    nameToNode[node.name] = node;
+  const nodeMap = Object.fromEntries(nodes.map((node) => [node.id, node]));
+  console.log(nodeMap);
 
+  nodes.forEach((node) => {
     if (node.lat < latRange[0]) {
       latRange[0] = node.lat;
     }
@@ -99,7 +105,23 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
 
   const g = svg.append("g");
 
-  graph.append("button").text("Reset Zoom").on("click", () => window.location.reload());
+  // const legend = g.append("rect").attr("width", 200).attr("height", 150).attr('fill', '#fff').attr('stroke', '#000')
+  g.append("text")
+    .attr("stroke", "black")
+    .style("font-size", 14)
+    .text("node.name");
+  // legend.append('rect').attr('x', 10).attr('y', 10).text('Legend')
+
+  graph
+    .append("button")
+    .text("Reset Zoom")
+    .on("click", () => window.location.reload());
+
+  graph
+    .append("p")
+    .text(
+      "Wheelchair: Square - Not Accessible, Squircle - Partially Accessible, Circle - Accessible"
+    );
 
   resetZoom();
 
@@ -107,22 +129,27 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
     const t = e.transform;
 
     if (t.k < 1 - offset) {
-        t.k = 1 - offset;
-        t.x = (width * offset) / 2;
-        t.y = (height * offset) / 2;
+      t.k = 1 - offset;
+      t.x = (width * offset) / 2;
+      t.y = (height * offset) / 2;
     }
 
     maxRadius = maxRadiusDefault / t.k;
     maxStroke = maxStrokeDefault / t.k;
 
-    const scaler = Math.pow(1.1, t.k)
-    console.log(t.k);
-    g.selectChildren("circle")
+    g.selectChildren("rect")
       .nodes()
       .forEach((child) => {
-        const ratio = child.getAttribute("x-ratio");
+        const id = child.getAttribute("x-id");
+        const node = nodeMap[id];
 
-        child.setAttribute("r", Number(ratio) * maxRadius * Math.pow(1.1, t.k) + 2);
+        let r = node.value * maxRadius * Math.pow(1.1, t.k) + 2;
+
+        child.setAttribute("width", wchScale[node.wheelchair] * r);
+        child.setAttribute("height", wchScale[node.wheelchair] * r);
+        child.setAttribute("x", node.x - r);
+        child.setAttribute("y", node.y - r);
+        child.setAttribute("rx", (node.wheelchair * r) / 2);
         child.setAttribute("stroke-width", 1 / t.k);
       });
 
@@ -131,7 +158,10 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
       .forEach((child) => {
         const ratio = child.getAttribute("x-ratio");
 
-        child.setAttribute("stroke-width", Number(ratio) * maxStroke * Math.pow(1.05, t.k) + 1);
+        child.setAttribute(
+          "stroke-width",
+          Number(ratio) * maxStroke * Math.pow(1.05, t.k) + 1
+        );
       });
 
     g.attr("transform", t);
@@ -144,32 +174,30 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
     GColor(255, 100, 100)
   );
 
-  links.forEach((link) => {
-    const ratio =
-      (link.value - edgeValueRange[0]) /
-      (edgeValueRange[1] - edgeValueRange[0]);
+  edges.forEach((edge) => {
+    const ratio = edge.value;
     const strokeWidth = ratio * maxStroke + 1;
 
     g.append("line")
       .attr(
         "x1",
-        offset + ((nameToNode[link.source].lon - lonStart) / lonDiff) * width
+        offset + ((nodeMap[edge.source].lon - lonStart) / lonDiff) * width
       )
       .attr(
         "y1",
         offset +
           height -
-          ((nameToNode[link.source].lat - latStart) / latDiff) * height
+          ((nodeMap[edge.source].lat - latStart) / latDiff) * height
       )
       .attr(
         "x2",
-        offset + ((nameToNode[link.target].lon - lonStart) / lonDiff) * width
+        offset + ((nodeMap[edge.target].lon - lonStart) / lonDiff) * width
       )
       .attr(
         "y2",
         offset +
           height -
-          ((nameToNode[link.target].lat - latStart) / latDiff) * height
+          ((nodeMap[edge.target].lat - latStart) / latDiff) * height
       )
       .attr("stroke", colorRange[Math.round(ratio * (colorRange.length - 1))])
       .attr("stroke-width", strokeWidth)
@@ -180,22 +208,29 @@ function forceGraph({ nodes, links, edgeValueRange, nodeValueRange }) {
     const x = offset + ((node.lon - lonStart) / lonDiff) * width;
     const y = offset + height - ((node.lat - latStart) / latDiff) * height;
 
-    const ratio =
-      (node.value - nodeValueRange[0]) /
-      (nodeValueRange[1] - nodeValueRange[0]);
+    const ratio = node.value;
     const r = ratio * maxRadius + 2;
     const color = colorRange[Math.round(ratio * (colorRange.length - 1))];
 
-    g.append("circle")
-      .attr("cx", x)
-      .attr("cy", y)
-      .attr("r", r)
+    node.x = x;
+    node.y = y;
+
+    g.append("rect")
+      .attr("x", x - r)
+      .attr("y", y - r)
+      .attr("width", r * 2)
+      .attr("height", r * 2)
       .attr("fill", color)
+      .attr("x-id", node.id)
       .attr("x-ratio", ratio)
+      .attr("rx", (node.wheelchair * r) / 2)
+      .attr("x-x", x)
+      .attr("x-y", y)
+      .attr("x-wheelchair", node.wheelchair)
       .attr("stroke", "black")
       .attr("stroke-width", 1)
       .append("title")
-      .text(node.name + "\n" + node.links.join(", "));
+      .text(node.name + "\n" + node.edges.join(", "));
 
     // g
     //   .append("text")

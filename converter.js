@@ -100,30 +100,35 @@ const routes = convertFilenameToData("routes.txt");
 const trips = convertFilenameToData("trips.txt");
 const stopTimes = convertFilenameToData("stop_times.txt");
 
-const stopToParent = {};
-const stopToName = {};
+const stopIdToParentId = {};
+const stopIdToStop = {};
 stops.forEach((stop) => {
   const parent = stop[5] || stop[0];
-  stopToParent[stop[0]] = parent;
+  stopIdToParentId[stop[0]] = parent;
 
-  stopToName[parent] = {
-    name: stop[1].split(" - ")[0],
+  stopIdToStop[parent] = {
+    id: parent,
+    name: stop[1],
     lat: stop[2],
     lon: stop[3],
     value: 0,
-    links: new Set(),
+    edges: new Set(),
+    wheelchair: Math.min(
+      { 0: 0, 2: 1, 1: 2 }[stop[6]],
+      stopIdToStop[parent]?.wheelchair || 2
+    ),
   };
 });
 
-const routeIdToRoute = {};
+const routeIdToRouteName = {};
 routes.forEach((route) => {
-  routeIdToRoute[route[0]] = route[2];
+  routeIdToRouteName[route[0]] = route[2];
 });
 
-const tripIdToRouteId = {};
+const tripIdToRouteName = {};
 trips.forEach((trip) => {
   if (trip[2]) {
-    tripIdToRouteId[trip[2]] = routeIdToRoute[trip[0]];
+    tripIdToRouteName[trip[2]] = routeIdToRouteName[trip[0]];
   }
 });
 
@@ -134,19 +139,20 @@ let prevTripId = null;
 let prevSequence = null;
 stopTimes.forEach((stopTime) => {
   const tripId = stopTime[0];
-  const stopId = stopToParent[stopTime[3]];
+  const stopId = stopIdToParentId[stopTime[3]];
   const sequence = stopTime[4];
 
   // int && < 100 = trams
-  const routeName = tripIdToRouteId[tripId];
+  const routeName = tripIdToRouteName[tripId];
   if (
-    !(Number.isSafeInteger(routeName) && routeName < 100) // && !['A', 'B', 'C'].includes(routeName)
+    !(Number.isSafeInteger(routeName) && routeName < 100) &&
+    !["A", "B", "C"].includes(routeName)
   ) {
     return;
   }
 
   stations.add(stopId);
-  stopToName[stopId].links.add(routeName);
+  stopIdToStop[stopId].edges.add(routeName);
 
   if (
     prevStopId &&
@@ -158,11 +164,6 @@ stopTimes.forEach((stopTime) => {
     edge.sort();
 
     neighbors[edge.join("-")] = neighbors[edge.join("-")] + 1 || 1;
-
-    // console.log(edge, [prevStopId, stopId]);
-    // console.log(`${prevStopId} -> ${stopId}`);
-  } else {
-    // console.log(`stopId: ${stopId}, sequence: ${sequence}, tripId: ${tripId}`);
   }
 
   prevStopId = stopId;
@@ -175,8 +176,8 @@ const nodeValueRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
 
 let edges = Object.entries(neighbors).map(([key, value]) => {
   const [sourceName, targetName] = key.split("-");
-  const source = stopToName[sourceName];
-  const target = stopToName[targetName];
+  const source = stopIdToStop[sourceName];
+  const target = stopIdToStop[targetName];
 
   target.value += value;
   source.value += value;
@@ -206,23 +207,36 @@ let edges = Object.entries(neighbors).map(([key, value]) => {
   }
 
   return {
-    source: source.name,
-    target: target.name,
+    source: sourceName,
+    target: targetName,
     value,
   };
 });
+
+// descending sort by value
 edges = _.reverse(_.sortBy(edges, "value"));
 
-let nodes = Array.from(stations).map((station) => {
-  stopToName[station].links = Array.from(stopToName[station].links).sort();
-  return stopToName[station];
+// scale edge value to [0, 1]
+edges = edges.map((edge) => {
+  edge.value =
+    (edge.value - edgeValueRange[0]) / (edgeValueRange[1] - edgeValueRange[0]);
+  return edge;
 });
-nodes = _.reverse(_.sortBy(nodes, "value"));
 
-console.log("nodes", nodes);
-console.log("edges", edges);
+// convert edges set to sorted array
+// scale node value to [0, 1]
+let nodes = Array.from(stations).map((station) => {
+  stopIdToStop[station].edges = Array.from(stopIdToStop[station].edges).sort();
+  stopIdToStop[station].value =
+    (stopIdToStop[station].value - nodeValueRange[0]) /
+    (nodeValueRange[1] - nodeValueRange[0]);
+  return stopIdToStop[station];
+});
+
+// descending sort by value
+nodes = _.reverse(_.sortBy(nodes, "value"));
 
 fs.writeFileSync(
   path.join("data", "miserables.json"),
-  JSON.stringify({ nodes, links: edges, nodeValueRange, edgeValueRange })
+  JSON.stringify({ nodes, edges })
 );
