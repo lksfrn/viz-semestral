@@ -1,3 +1,57 @@
 body {
+  margin: 0;
+}
+
+.node {
+  cursor: pointer;
+  position: relative;
+}
+
+.node > div {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #afeeee;
+}
+
+.node > span {
+  position: relative;
+}
+
+.nodes {
+  overflow-y: scroll;
+  border-bottom: 1px solid black;
+}
+
+.node:hover {
+  text-decoration: underline;
+}
+
+.node.active {
+  font-weight: bold;
+}
+
+.panel button {
+  width: 50%;
+}
+
+#wrapper {
+  min-width: 1024px;
+  position: relative;
+}
+
+.legend {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
     margin: 0;
+    padding: 3px;
+    background-color: white;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+}
+
+h1 {
+    text-align: center;
 }

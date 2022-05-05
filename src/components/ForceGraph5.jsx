@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import { zoomIdentity } from "d3";
 import { useEffect } from "react";
+import { sortBy, reverse } from "lodash";
 
 const wchScale = {
   0: 2, // rect - not accessible
@@ -43,7 +43,6 @@ function forceGraph({ nodes, edges }) {
   const latRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
 
   const nodeMap = Object.fromEntries(nodes.map((node) => [node.id, node]));
-  console.log(nodeMap);
 
   nodes.forEach((node) => {
     if (node.lat < latRange[0]) {
@@ -71,11 +70,12 @@ function forceGraph({ nodes, edges }) {
   const latStart = latRange[0];
   const lonStart = lonRange[0];
 
-  const width = window.innerWidth;
+  const panelWidth = 256;
+  const width = Math.max(1024, window.innerWidth) - panelWidth;
   const height = width / xyRatio;
 
   const offset = 0.05;
-  const maxStrokeDefault = 16;
+  const maxStrokeDefault = width / 200;
   const maxRadiusDefault = maxStrokeDefault / 1.2;
 
   let maxStroke = maxStrokeDefault;
@@ -93,6 +93,23 @@ function forceGraph({ nodes, edges }) {
     d3.select("svg g").attr("transform", initialZoom);
   }
 
+  function renderBar(prop) {
+    const bar = d3.select(".nodes");
+    const children = bar.selectChildren().nodes();
+
+    const arr =
+      prop[0] === "-"
+        ? reverse(sortBy(nodes, prop.slice(1)))
+        : sortBy(nodes, prop);
+
+    arr.forEach((node, i) => {
+      const nodeEl = children[i];
+      nodeEl.getElementsByTagName("div")[0].style =
+        "width: " + 100 * node.value + "%";
+      nodeEl.getElementsByTagName("span")[0].textContent = node.name;
+    });
+  }
+
   const graph = d3.select("#force-graph5");
 
   graph.selectChildren().remove();
@@ -103,28 +120,62 @@ function forceGraph({ nodes, edges }) {
     .attr("width", width)
     .attr("height", height);
 
+  const wrapper = d3.select("#wrapper");
+  wrapper.selectChildren(".panel").remove();
+
+  const panel = wrapper.append("div");
+  panel.style("width", `${panelWidth}px`);
+  panel.attr("class", "panel");
+
+  panel
+    .append("button")
+    .text("By Size")
+    .on("click", () => renderBar("-value"));
+  const btnHeight = panel
+    .append("button")
+    .text("By Name")
+    .on("click", () => renderBar("name"))
+    .node().offsetHeight;
+
+  const nodesEl = panel
+    .append("div")
+    .attr("class", "nodes")
+    .style("max-height", `${height - btnHeight}px`);
+
   const g = svg.append("g");
 
-  // const legend = g.append("rect").attr("width", 200).attr("height", 150).attr('fill', '#fff').attr('stroke', '#000')
-  g.append("text")
-    .attr("stroke", "black")
-    .style("font-size", 14)
-    .text("node.name");
-  // legend.append('rect').attr('x', 10).attr('y', 10).text('Legend')
+  function renderSelected() {
+    const rectList = g.selectChildren("rect").nodes();
+    const boomList = nodesEl.selectChildren("div").nodes();
+    nodes.forEach((node, i) => {
+      const rect = rectList[i];
+      const boom = boomList[i];
 
-  graph
-    .append("button")
-    .text("Reset Zoom")
-    .on("click", () => window.location.reload());
+      if (node.selected) {
+        rect.setAttribute("stroke-width", Math.sqrt(maxStrokeDefault) / k);
+        boom.style = "font-weight: bold";
+      } else {
+        rect.setAttribute("stroke-width", 1 / k);
+        boom.style = "font-weight: normal";
+      }
+    });
+  }
 
-  graph
+  const legend = wrapper
     .append("p")
+    .attr("class", 'legend')
     .text(
       "Wheelchair: Square - Not Accessible, Squircle - Partially Accessible, Circle - Accessible"
     );
 
+  // legend
+  //   .append("button")
+  //   .text("Reset Zoom")
+  //   .on("click", () => window.location.reload());
+
   resetZoom();
 
+  let k = 1 - offset;
   function handleZoom(e) {
     const t = e.transform;
 
@@ -134,6 +185,7 @@ function forceGraph({ nodes, edges }) {
       t.y = (height * offset) / 2;
     }
 
+    k = t.k;
     maxRadius = maxRadiusDefault / t.k;
     maxStroke = maxStrokeDefault / t.k;
 
@@ -143,15 +195,16 @@ function forceGraph({ nodes, edges }) {
         const id = child.getAttribute("x-id");
         const node = nodeMap[id];
 
-        let r = node.value * maxRadius * Math.pow(1.1, t.k) + 2;
+        let r = node.value * maxRadius + 2;
 
         child.setAttribute("width", wchScale[node.wheelchair] * r);
         child.setAttribute("height", wchScale[node.wheelchair] * r);
         child.setAttribute("x", node.x - r);
         child.setAttribute("y", node.y - r);
         child.setAttribute("rx", (node.wheelchair * r) / 2);
-        child.setAttribute("stroke-width", 1 / t.k);
       });
+
+    renderSelected();
 
     g.selectChildren("line")
       .nodes()
@@ -170,8 +223,8 @@ function forceGraph({ nodes, edges }) {
   svg.call(d3.zoom().on("zoom", handleZoom));
 
   const colorRange = createColorRange(
-    GColor(100, 255, 0),
-    GColor(255, 100, 100)
+    GColor(150, 250, 150),
+    GColor(0, 150, 0)
   );
 
   edges.forEach((edge) => {
@@ -205,6 +258,17 @@ function forceGraph({ nodes, edges }) {
   });
 
   nodes.forEach((node) => {
+    const nodeEl = nodesEl
+      .append("div")
+      .attr("class", "node")
+      .on("click", () => {
+        node.selected = !node.selected;
+        renderSelected();
+      });
+
+    nodeEl.append("div");
+    nodeEl.append("span");
+
     const x = offset + ((node.lon - lonStart) / lonDiff) * width;
     const y = offset + height - ((node.lat - latStart) / latDiff) * height;
 
@@ -214,6 +278,7 @@ function forceGraph({ nodes, edges }) {
 
     node.x = x;
     node.y = y;
+    node.selected = false;
 
     g.append("rect")
       .attr("x", x - r)
@@ -229,17 +294,16 @@ function forceGraph({ nodes, edges }) {
       .attr("x-wheelchair", node.wheelchair)
       .attr("stroke", "black")
       .attr("stroke-width", 1)
+      .style("cursor", "pointer")
+      .on("click", () => {
+        node.selected = !node.selected;
+        renderSelected();
+      })
       .append("title")
       .text(node.name + "\n" + node.edges.join(", "));
-
-    // g
-    //   .append("text")
-    //   .attr("x", x + 15)
-    //   .attr("y", y + 4)
-    //   .attr("stroke", "black")
-    //   .style("font-size", 14)
-    //   .text(node.name);
   });
+
+  renderBar("-value");
 }
 
 export default function ForceGraph(props) {
@@ -249,13 +313,27 @@ export default function ForceGraph(props) {
 
   return (
     <>
-      <div id="force-graph5"></div>
+      <div id="wrapper" style={{ display: "flex", maxWidth: "100%" }}>
+        <div id="force-graph5" style={{ flex: "1 0" }}></div>
+      </div>
 
-      {/* <div style={{ textAlign: "text" }}>
-        <button onClick={() => {
-          d3.select("svg").remove();
-        }}>Reset zoom</button>
-      </div> */}
+      <h1>
+        VIZ - Semestral Work
+        <br />
+        <small>Lukas Frana, Tomas Omasta</small>
+      </h1>
+
+      <p>Prague's PID Weak spot stations visualization </p>
+      <p> It contains both trams and subway trips </p>
+      <p>This little project of ours detects the most throughput station in Prague's public transportation system PID. </p>
+      <p> Different shapes for different wheelchair access </p>
+      <p> Stations (nodes) are mapped with color and size. They encode the samme attribute. Attribute is sum of all trips going through the station.</p>
+      <p> Links are mapped with color and width concerning the number of trips going through a givne link</p>
+      <p> User can select specified stations by either clicking on nodes or on its name in right-side panel.</p>
+      <p> Selected stations (nodes) are highlighted with a bigger stroke, the name in stations list is made bold. </p>
+      <p> The stations in right-side oanel can be ordered by size, or by value. </p>
+      <p> The visualization implements zoom and pan as well. </p>
+
     </>
   );
 }

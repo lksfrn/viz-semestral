@@ -1,8 +1,6 @@
 const path = require("path");
 const fs = require("fs");
 const _ = require("lodash");
-const { exit } = require("process");
-// const csv = require("csv-parse/lib/es5");
 
 function convertFilenameToData(filename) {
   const filePath = path.join("data", filename);
@@ -16,16 +14,6 @@ function convertFilenameToData(filename) {
   });
 
   return lines.slice(1, -1);
-
-  //   return file
-  //     .split("\n")
-  //     .map((line) =>
-  //       line
-  //         .split(",")
-  //         .map((s) =>
-  //           s !== "" && !Number.isNaN(Number(s)) ? Number(s) : _.trim(s, '"')
-  //         )
-  //     );
 }
 
 function CSVToArray(strData, strDelimiter) {
@@ -153,6 +141,13 @@ stopTimes.forEach((stopTime) => {
 
   stations.add(stopId);
   stopIdToStop[stopId].edges.add(routeName);
+
+  if (
+    ["A", "B", "C"].includes(routeName) &&
+    !stopIdToStop[stopId].name.endsWith("(M)")
+  ) {
+    stopIdToStop[stopId].name += " (M)";
+  }
 
   if (
     prevStopId &&
