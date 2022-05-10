@@ -163,7 +163,7 @@ function forceGraph({ nodes, edges }) {
 
   const legend = wrapper
     .append("p")
-    .attr("class", 'legend')
+    .attr("class", "legend")
     .text(
       "Wheelchair: Square - Not Accessible, Squircle - Partially Accessible, Circle - Accessible"
     );
@@ -222,10 +222,34 @@ function forceGraph({ nodes, edges }) {
 
   svg.call(d3.zoom().on("zoom", handleZoom));
 
-  const colorRange = createColorRange(
-    GColor(150, 250, 150),
-    GColor(0, 150, 0)
-  );
+  // const colorRange = createColorRange(
+  //   GColor(150, 250, 150),
+  //   GColor(0, 150, 0)
+  // );
+
+  // https://r-charts.com/color-palette-generator/
+  const colorRange = ([
+    "#3146e6",
+    "#5243da",
+    "#6740ce",
+    "#763ec2",
+    "#833bb6",
+    "#8d38aa",
+    "#96359f",
+    "#9e3293",
+    "#a52f88",
+    "#ab2c7d",
+    "#b12971",
+    "#b52666",
+    "#ba235b",
+    "#be2050",
+    "#c21c45",
+    "#c5183a",
+    "#c8132f",
+    "#cb0e22",
+    "#ce0714",
+    "#d00000",
+  ]);
 
   edges.forEach((edge) => {
     const ratio = edge.value;
@@ -325,15 +349,36 @@ export default function ForceGraph(props) {
 
       <p>Prague's PID Weak spot stations visualization </p>
       <p> It contains both trams and subway trips </p>
-      <p>This little project of ours detects the most throughput station in Prague's public transportation system PID. </p>
+      <p>
+        This little project of ours detects the most throughput station in
+        Prague's public transportation system PID.{" "}
+      </p>
       <p> Different shapes for different wheelchair access </p>
-      <p> Stations (nodes) are mapped with color and size. They encode the samme attribute. Attribute is sum of all trips going through the station.</p>
-      <p> Links are mapped with color and width concerning the number of trips going through a givne link</p>
-      <p> User can select specified stations by either clicking on nodes or on its name in right-side panel.</p>
-      <p> Selected stations (nodes) are highlighted with a bigger stroke, the name in stations list is made bold. </p>
-      <p> The stations in right-side oanel can be ordered by size, or by value. </p>
+      <p>
+        {" "}
+        Stations (nodes) are mapped with color and size. They encode the samme
+        attribute. Attribute is sum of all trips going through the station.
+      </p>
+      <p>
+        {" "}
+        Links are mapped with color and width concerning the number of trips
+        going through a givne link
+      </p>
+      <p>
+        {" "}
+        User can select specified stations by either clicking on nodes or on its
+        name in right-side panel.
+      </p>
+      <p>
+        {" "}
+        Selected stations (nodes) are highlighted with a bigger stroke, the name
+        in stations list is made bold.{" "}
+      </p>
+      <p>
+        {" "}
+        The stations in right-side oanel can be ordered by size, or by value.{" "}
+      </p>
       <p> The visualization implements zoom and pan as well. </p>
-
     </>
   );
 }
