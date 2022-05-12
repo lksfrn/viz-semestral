@@ -5,81 +5,58 @@ const _ = require("lodash");
 function convertFilenameToData(filename) {
   const filePath = path.join("data", filename);
 
+  // load the file
   const file = fs.readFileSync(filePath, "utf8");
 
   const lines = CSVToArray(file, ",").map((line) => {
     return line.map((s) =>
+      // convert to number if possible
       s !== "" && !Number.isNaN(Number(s)) ? Number(s) : _.trim(s, '"')
     );
   });
 
+  // skip first header line and last blank line
   return lines.slice(1, -1);
 }
 
 function CSVToArray(strData, strDelimiter) {
-  // Check to see if the delimiter is defined. If not,
-  // then default to comma.
   strDelimiter = strDelimiter || ",";
 
-  // Create a regular expression to parse the CSV values.
-  var objPattern = new RegExp(
-    // Delimiters.
+  const objPattern = new RegExp(
+    // delimiters
     "(\\" +
       strDelimiter +
       "|\\r?\\n|\\r|^)" +
-      // Quoted fields.
+      // quoted fields
       '(?:"([^"]*(?:""[^"]*)*)"|' +
-      // Standard fields.
+      // standard fields
       '([^"\\' +
       strDelimiter +
       "\\r\\n]*))",
     "gi"
   );
 
-  // Create an array to hold our data. Give the array
-  // a default empty first row.
-  var arrData = [[]];
+  const arrData = [[]];
+  let arrMatches = null;
 
-  // Create an array to hold our individual pattern
-  // matching groups.
-  var arrMatches = null;
-
-  // Keep looping over the regular expression matches
-  // until we can no longer find a match.
   while ((arrMatches = objPattern.exec(strData))) {
-    // Get the delimiter that was found.
-    var strMatchedDelimiter = arrMatches[1];
+    const strMatchedDelimiter = arrMatches[1];
 
-    // Check to see if the given delimiter has a length
-    // (is not the start of string) and if it matches
-    // field delimiter. If id does not, then we know
-    // that this delimiter is a row delimiter.
     if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
-      // Since we have reached a new row of data,
-      // add an empty row to our data array.
       arrData.push([]);
     }
 
-    var strMatchedValue;
+    let strMatchedValue;
 
-    // Now that we have our delimiter out of the way,
-    // let's check to see which kind of value we
-    // captured (quoted or unquoted).
     if (arrMatches[2]) {
-      // We found a quoted value. When we capture
-      // this value, unescape any double quotes.
       strMatchedValue = arrMatches[2].replace(new RegExp('""', "g"), '"');
     } else {
-      // We found a non-quoted value.
       strMatchedValue = arrMatches[3];
     }
 
-    // Now that we have our value string, let's add
-    // it to the data array.
     arrData[arrData.length - 1].push(strMatchedValue);
   }
 
-  // Return the parsed data.
   return arrData;
 }
 
@@ -91,9 +68,11 @@ const stopTimes = convertFilenameToData("stop_times.txt");
 const stopIdToParentId = {};
 const stopIdToStop = {};
 stops.forEach((stop) => {
+  // parent ID is used as a key for the stop ID
   const parent = stop[5] || stop[0];
   stopIdToParentId[stop[0]] = parent;
 
+  // get stop by its ID
   stopIdToStop[parent] = {
     id: parent,
     name: stop[1],
@@ -102,17 +81,19 @@ stops.forEach((stop) => {
     value: 0,
     edges: new Set(),
     wheelchair: Math.min(
-      { 0: 0, 2: 1, 1: 2 }[stop[6]],
+      { 0: 0, 2: 1, 1: 2 }[stop[6]], // reorder wheelchair accessibility
       stopIdToStop[parent]?.wheelchair || 2
     ),
   };
 });
 
+// get route by its spoken name
 const routeIdToRouteName = {};
 routes.forEach((route) => {
   routeIdToRouteName[route[0]] = route[2];
 });
 
+// get trip by its route spoken name
 const tripIdToRouteName = {};
 trips.forEach((trip) => {
   if (trip[2]) {
@@ -130,11 +111,11 @@ stopTimes.forEach((stopTime) => {
   const stopId = stopIdToParentId[stopTime[3]];
   const sequence = stopTime[4];
 
-  // int && < 100 = trams
+  // filter trams and subways
   const routeName = tripIdToRouteName[tripId];
   if (
-    !(Number.isSafeInteger(routeName) && routeName < 100) &&
-    !["A", "B", "C"].includes(routeName)
+    !(Number.isSafeInteger(routeName) && routeName < 100) && // trams
+    !["A", "B", "C"].includes(routeName) // subways
   ) {
     return;
   }
@@ -142,6 +123,7 @@ stopTimes.forEach((stopTime) => {
   stations.add(stopId);
   stopIdToStop[stopId].edges.add(routeName);
 
+  // append marks to subway's names
   if (
     ["A", "B", "C"].includes(routeName) &&
     !stopIdToStop[stopId].name.endsWith("(M)")
@@ -149,6 +131,8 @@ stopTimes.forEach((stopTime) => {
     stopIdToStop[stopId].name += " (M)";
   }
 
+  // add edge between stops
+  // conditional is true when new sequence is processed
   if (
     prevStopId &&
     prevSequence &&
@@ -166,8 +150,11 @@ stopTimes.forEach((stopTime) => {
   prevTripId = tripId;
 });
 
+// prepare default ranges
 const edgeValueRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
 const nodeValueRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+const latRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+const lonRange = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
 
 let edges = Object.entries(neighbors).map(([key, value]) => {
   const [sourceName, targetName] = key.split("-");
@@ -177,6 +164,7 @@ let edges = Object.entries(neighbors).map(([key, value]) => {
   target.value += value;
   source.value += value;
 
+  // target value range
   if (target.value > nodeValueRange[1]) {
     nodeValueRange[1] = target.value;
   }
@@ -185,6 +173,7 @@ let edges = Object.entries(neighbors).map(([key, value]) => {
     nodeValueRange[0] = target.value;
   }
 
+  // source value range
   if (source.value > nodeValueRange[1]) {
     nodeValueRange[1] = source.value;
   }
@@ -193,12 +182,49 @@ let edges = Object.entries(neighbors).map(([key, value]) => {
     nodeValueRange[0] = source.value;
   }
 
+  // edge value range
   if (value > edgeValueRange[1]) {
     edgeValueRange[1] = value;
   }
 
   if (value < edgeValueRange[0]) {
     edgeValueRange[0] = value;
+  }
+
+  // target latitude range
+  if (target.lat > latRange[1]) {
+    latRange[1] = target.lat;
+  }
+
+  if (target.lat < latRange[0]) {
+    latRange[0] = target.lat;
+  }
+
+  // target longitude range
+  if (target.lon > lonRange[1]) {
+    lonRange[1] = target.lon;
+  }
+
+  if (target.lon < lonRange[0]) {
+    lonRange[0] = target.lon;
+  }
+
+  // source latitude range
+  if (source.lat > latRange[1]) {
+    latRange[1] = source.lat;
+  }
+
+  if (source.lat < latRange[0]) {
+    latRange[0] = source.lat;
+  }
+
+  // source longitude range
+  if (source.lon > lonRange[1]) {
+    lonRange[1] = source.lon;
+  }
+
+  if (source.lon < lonRange[0]) {
+    lonRange[0] = source.lon;
   }
 
   return {
@@ -233,5 +259,5 @@ nodes = _.reverse(_.sortBy(nodes, "value"));
 
 fs.writeFileSync(
   path.join("data", "miserables.json"),
-  JSON.stringify({ nodes, edges })
+  JSON.stringify({ nodes, edges, latRange, lonRange })
 );
