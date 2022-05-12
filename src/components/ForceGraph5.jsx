@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import { useEffect } from "react";
 import { sortBy, reverse } from "lodash";
+import { getColor } from "./colors";
 
 const wchScale = {
   0: 2, // rect - not accessible
@@ -152,10 +153,10 @@ function forceGraph({ nodes, edges }) {
       const boom = boomList[i];
 
       if (node.selected) {
-        rect.setAttribute("stroke-width", Math.sqrt(maxStrokeDefault) / k);
+        rect.setAttribute("stroke-width", Math.sqrt(maxStrokeDefault) / Math.pow(1.1, k));
         boom.style = "font-weight: bold";
       } else {
-        rect.setAttribute("stroke-width", 1 / k);
+        rect.setAttribute("stroke-width", 0);
         boom.style = "font-weight: normal";
       }
     });
@@ -228,7 +229,7 @@ function forceGraph({ nodes, edges }) {
   // );
 
   // https://r-charts.com/color-palette-generator/
-  const colorRange = ([
+  const colorRange = [
     "#3146e6",
     "#5243da",
     "#6740ce",
@@ -249,7 +250,7 @@ function forceGraph({ nodes, edges }) {
     "#cb0e22",
     "#ce0714",
     "#d00000",
-  ]);
+  ];
 
   edges.forEach((edge) => {
     const ratio = edge.value;
@@ -276,7 +277,7 @@ function forceGraph({ nodes, edges }) {
           height -
           ((nodeMap[edge.target].lat - latStart) / latDiff) * height
       )
-      .attr("stroke", colorRange[Math.round(ratio * (colorRange.length - 1))])
+      .attr("stroke", getColor(ratio))
       .attr("stroke-width", strokeWidth)
       .attr("x-ratio", ratio);
   });
@@ -298,7 +299,7 @@ function forceGraph({ nodes, edges }) {
 
     const ratio = node.value;
     const r = ratio * maxRadius + 2;
-    const color = colorRange[Math.round(ratio * (colorRange.length - 1))];
+    const color = getColor(ratio);
 
     node.x = x;
     node.y = y;
@@ -316,8 +317,8 @@ function forceGraph({ nodes, edges }) {
       .attr("x-x", x)
       .attr("x-y", y)
       .attr("x-wheelchair", node.wheelchair)
-      .attr("stroke", "black")
-      .attr("stroke-width", 1)
+      .attr("stroke", "red")
+      .attr("stroke-width", 0)
       .style("cursor", "pointer")
       .on("click", () => {
         node.selected = !node.selected;
@@ -347,7 +348,7 @@ export default function ForceGraph(props) {
         <small>Lukas Frana, Tomas Omasta</small>
       </h1>
 
-      <p>Prague's PID Weak spot stations visualization </p>
+      {/* <p>Prague's PID Weak spot stations visualization </p>
       <p> It contains both trams and subway trips </p>
       <p>
         This little project of ours detects the most throughput station in
@@ -378,7 +379,7 @@ export default function ForceGraph(props) {
         {" "}
         The stations in right-side oanel can be ordered by size, or by value.{" "}
       </p>
-      <p> The visualization implements zoom and pan as well. </p>
+      <p> The visualization implements zoom and pan as well. </p> */}
     </>
   );
 }
