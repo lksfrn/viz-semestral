@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import ForceGraph from "./components/ForceGraph5";
-import Histogram from "./components/Histogram";
-import { JsonData, RowData } from "./interfaces";
+import TheMap from "./components/TheMap";
 
 function App() {
   const [data, setData] = useState<any>(null);
@@ -21,7 +19,7 @@ function App() {
 
   return (
     <main style={{height: '100vh'}}>
-      <ForceGraph data={data} />
+      <TheMap data={data} />
     </main>
   );
 }

@@ -14,10 +14,6 @@ function HSVtoRGB(h: number, s: number, v: number): RGB {
   let q: number;
   let t: number;
 
-  //   if (arguments.length === 1) {
-  //     (s = h.s), (v = h.v), (h = h.h);
-  //   }
-
   i = Math.floor(h * 6);
   f = h * 6 - i;
   p = v * (1 - s);
@@ -72,6 +68,6 @@ function RGBtoColor({ r, g, b }: RGB) {
 }
 
 export function getColor(value: number) {
-  const rgb = HSVtoRGB(0.3, 0.7, Math.exp(-value * 1));
+  const rgb = HSVtoRGB(0.3, 0.7, Math.exp(-value));
   return RGBtoColor(rgb);
 }
