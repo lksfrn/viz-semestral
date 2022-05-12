@@ -1,7 +1,6 @@
 import { getColor } from "./colors";
 import * as d3 from "d3";
 import { sortBy, reverse } from "lodash";
-import { offset, panelWidth } from "./constants";
 
 export const panelWidth = 256;
 export const offset = 0.05;
